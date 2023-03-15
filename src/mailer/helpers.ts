@@ -7,6 +7,44 @@ const DEFAULT_TEMPLATE_NAME: TemplateName = 'template';
 const DEFAULT_CONTENT_NAME: ContentName = 'content';
 
 /**
+ * Replaces placeholders in the given content string with their corresponding
+ * values from the provided values object.
+ *
+ * @param {string} content - The content string containing placeholders wrapped in {{ }}.
+ * @param {Record<string, string>} values - An object containing keys that match the placeholders in the content and their respective replacement values.
+ * @returns {string} - The content string with placeholders replaced by their corresponding values.
+ */
+export function populateContent(content: string, values: Record<string, string>): string {
+  const keys = Object.keys(values);
+
+  keys.forEach((key) => {
+    if (Object.prototype.hasOwnProperty.call(values, key)) {
+      const placeholder = new RegExp(`{{${key}}}`, "g");
+      const value = values[key];
+      content = content.replace(placeholder, value);
+    }
+  });
+
+  return content;
+}
+
+/**
+ * Populates the given HTML template by replacing the placeholders with the provided values.
+ *
+ * @param {string} template - The HTML template content as a string.
+ * @param {Object} values - An object containing the keys and values to replace in the template.
+ * @returns {string} The populated HTML template.
+ */
+export function populateTemplate(template: string, values: { [key: string]: string }): string {
+  return template.replace(/\{\{(\w+)\}\}/g, (_match, key) => {
+    if (Object.prototype.hasOwnProperty.call(values, key)) {
+      return values[key];
+    }
+    return `{{${key}}}`;
+  });
+}
+
+/**
  * Reads a JSON content file and returns its content as an object.
  *
  * @param {ContentName} contentName - The name of the content file without the extension.
