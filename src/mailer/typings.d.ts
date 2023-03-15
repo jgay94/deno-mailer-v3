@@ -34,3 +34,12 @@ export type JsonContent = {
     };
   };
 };
+
+/**
+ * @type
+ * Represents an email object with a subject and a body.
+ */
+export type Email = {
+  subject: string;
+  body: string;
+};

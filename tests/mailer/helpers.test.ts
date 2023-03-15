@@ -1,8 +1,8 @@
 import { describe, it } from "std/testing/bdd.ts";
 import { assertStringIncludes, assertRejects, assertInstanceOf, assertEquals } from "std/testing/asserts.ts";
 
-import { getHtmlTemplate, getJsonContent, populateContent, populateTemplate } from "@mailer/helpers.ts";
-import { ContentName, TemplateName } from "@mailer/typings.d.ts";
+import { createEmail, getHtmlTemplate, getJsonContent, populateContent, populateTemplate } from "@mailer/helpers.ts";
+import { ContentName, Email, TemplateName } from "@mailer/typings.d.ts";
 
 describe("getHtmlTemplate", () => {
   it("should get default html template", async () => {
@@ -63,7 +63,6 @@ describe("populateTemplate", () => {
 
     const expectedResult = "<html><head><title>Test Title</title></head><body>Hello, World!</body></html>";
     const result = populateTemplate(template, values);
-    console.log(result);
 
     assertEquals(result, expectedResult);
   });
@@ -84,8 +83,40 @@ describe("populateContent", () => {
       "body": "Hello, JohnDoe! Thank you for joining us."
     }`;
     const result = populateContent(content, values);
-    console.log(result);
 
+    assertEquals(result, expectedResult);
+  });
+});
+
+describe("createEmail", () => {
+  it("should create an email object with populated subject and body", () => {
+    const htmlTemplate = `
+      <html>
+        <body>
+          <h1>{{subject}}</h1>
+          <p>{{body}}</p>
+        </body>
+      </html>`;
+    const jsonContent = `{
+      "subject": "Welcome {{username}}!",
+      "body": "Hello, {{username}}! Thank you for joining us."
+    }`;
+    const values = {
+      username: "JohnDoe",
+    };
+
+    const expectedResult: Email = {
+      subject: "Welcome JohnDoe!",
+      body: `
+      <html>
+        <body>
+          <h1>Welcome JohnDoe!</h1>
+          <p>Hello, JohnDoe! Thank you for joining us.</p>
+        </body>
+      </html>`,
+    };
+
+    const result = createEmail(htmlTemplate, jsonContent, values);
     assertEquals(result, expectedResult);
   });
 });

@@ -1,10 +1,32 @@
-import { ContentName, JsonContent, TemplateName } from "@mailer/typings.d.ts";
+import { ContentName, Email, JsonContent, TemplateName } from "@mailer/typings.d.ts";
 
 /** The default template name used when no template name is provided to the getHtmlTemplate function. */
 const DEFAULT_TEMPLATE_NAME: TemplateName = 'template';
 
 /** The default content name used when no content name is provided to the getJsonContent function. */
 const DEFAULT_CONTENT_NAME: ContentName = 'content';
+
+/**
+ * Constructs an email object with the specified HTML template, JSON content, and values.
+ * 
+ * @param {string} htmlTemplate - The HTML template to use for the email body.
+ * @param {string} jsonContent - The JSON content containing the email subject and body placeholders.
+ * @param {Record<string, string>} values - An object containing key-value pairs to replace placeholders in the content.
+ * @returns {{ subject: string; body: string }} - An object containing the populated subject and body.
+ */
+export function createEmail(htmlTemplate: string, jsonContent: string, values: Record<string, string>): Email {
+  // Step 1: Populate the JSON content
+  const populatedContent = populateContent(jsonContent, values);
+  const contentObj = JSON.parse(populatedContent);
+
+  // Step 2: Populate the HTML template
+  const populatedHtml = populateTemplate(htmlTemplate, contentObj);
+
+  return {
+    subject: contentObj.subject,
+    body: populatedHtml,
+  };
+}
 
 /**
  * Replaces placeholders in the given content string with their corresponding
