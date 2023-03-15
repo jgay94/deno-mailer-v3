@@ -7,6 +7,16 @@ const DEFAULT_TEMPLATE_NAME: TemplateName = 'template';
 const DEFAULT_CONTENT_NAME: ContentName = 'content';
 
 /**
+ * Validates an email address using a regex pattern.
+ * @param {string} email - The email address to validate.
+ * @returns {boolean} - Returns true if the email is valid, otherwise false.
+ */
+export function validateEmail(email: string): boolean {
+  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return emailRegex.test(email);
+}
+
+/**
  * Constructs an email object with the specified HTML template, JSON content, and values.
  * 
  * @param {string} htmlTemplate - The HTML template to use for the email body.

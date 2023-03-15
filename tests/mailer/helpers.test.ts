@@ -1,7 +1,7 @@
 import { describe, it } from "std/testing/bdd.ts";
 import { assertStringIncludes, assertRejects, assertInstanceOf, assertEquals } from "std/testing/asserts.ts";
 
-import { createEmail, getHtmlTemplate, getJsonContent, populateContent, populateTemplate } from "@mailer/helpers.ts";
+import { createEmail, getHtmlTemplate, getJsonContent, populateContent, populateTemplate, validateEmail } from "@mailer/helpers.ts";
 import { ContentName, Email, TemplateName } from "@mailer/typings.d.ts";
 
 describe("getHtmlTemplate", () => {
@@ -118,5 +118,19 @@ describe("createEmail", () => {
 
     const result = createEmail(htmlTemplate, jsonContent, values);
     assertEquals(result, expectedResult);
+  });
+});
+
+describe("validateEmail", () => {
+  it("should return true for a valid email address", () => {
+    const validEmail = "john.doe@example.com";
+    const result = validateEmail(validEmail);
+    assertEquals(result, true);
+  });
+
+  it("should return false for an invalid email address", () => {
+    const invalidEmail = "john.doe@example";
+    const result = validateEmail(invalidEmail);
+    assertEquals(result, false);
   });
 });
